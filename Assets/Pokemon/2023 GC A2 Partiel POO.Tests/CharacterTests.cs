@@ -76,17 +76,17 @@ namespace _2023_GC_A2_Partiel_POO.Tests.Level_2
             var punch = new Punch();
             var oldHealth = pikachu.CurrentHealth;
 
-            pikachu.ReceiveAttack(punch); // hp : 100 => 60
+            pikachu.ReceiveAttack(punch, pikachu); // hp : 100 => 60
             Assert.That(pikachu.CurrentHealth, 
                 Is.EqualTo(oldHealth - (punch.Power - pikachu.Defense))); // 100 - (70-30)
             Assert.That(pikachu.CurrentStatus, Is.EqualTo(null));
             Assert.That(pikachu.IsAlive, Is.EqualTo(true));
             
-            pikachu.ReceiveAttack(punch); // hp : 60 => 20
+            pikachu.ReceiveAttack(punch, pikachu); // hp : 60 => 20
             Assert.That(pikachu.CurrentHealth, Is.EqualTo(20));
             Assert.That(pikachu.IsAlive, Is.EqualTo(true));
             
-            pikachu.ReceiveAttack(punch); // hp : 20 => 0
+            pikachu.ReceiveAttack(punch, pikachu); // hp : 20 => 0
             Assert.That(pikachu.CurrentHealth, Is.EqualTo(0));
             Assert.That(pikachu.IsAlive, Is.EqualTo(false));
             // RIP Pikachu
@@ -102,20 +102,20 @@ namespace _2023_GC_A2_Partiel_POO.Tests.Level_2
             var punch = new Punch();
             var oldHealth = pikachu.CurrentHealth;
 
-            pikachu.ReceiveAttack(punch); // hp : 100 => 70
+            pikachu.ReceiveAttack(punch, pikachu); // hp : 100 => 70
             Assert.That(pikachu.CurrentHealth, Is.EqualTo(70)); 
             Assert.That(pikachu.CurrentStatus, Is.EqualTo(null));
             Assert.That(pikachu.IsAlive, Is.EqualTo(true));
 
-            pikachu.ReceiveAttack(punch); // hp : 70 => 40
+            pikachu.ReceiveAttack(punch, pikachu); // hp : 70 => 40
             Assert.That(pikachu.CurrentHealth, Is.EqualTo(40)); 
             Assert.That(pikachu.IsAlive, Is.EqualTo(true));
 
-            pikachu.ReceiveAttack(punch); // hp : 40 => 10
+            pikachu.ReceiveAttack(punch, pikachu); // hp : 40 => 10
             Assert.That(pikachu.CurrentHealth, Is.EqualTo(10));
             Assert.That(pikachu.IsAlive, Is.EqualTo(true));
 
-            pikachu.ReceiveAttack(punch); // hp : 10 => 0
+            pikachu.ReceiveAttack(punch, pikachu); // hp : 10 => 0
             Assert.That(pikachu.CurrentHealth, Is.EqualTo(0));
             Assert.That(pikachu.IsAlive, Is.EqualTo(false));
             // RIP Pikachu

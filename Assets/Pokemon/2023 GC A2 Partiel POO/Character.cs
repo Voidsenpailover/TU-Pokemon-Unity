@@ -27,6 +27,10 @@ namespace _2023_GC_A2_Partiel_POO.Level_2
         /// Type de base
         /// </summary>
         TYPE _baseType;
+        /// <summary>
+        /// Status de base
+        /// </summary>
+        StatusPotential _baseStatus;
 
         public Character(int baseHealth, int baseAttack, int baseDefense, int baseSpeed, TYPE baseType)
         {
@@ -35,12 +39,16 @@ namespace _2023_GC_A2_Partiel_POO.Level_2
             _baseDefense = baseDefense;
             _baseSpeed = baseSpeed;
             _baseType = baseType;
+            _baseStatus = StatusPotential.NONE;
+            CurrentHealth = baseHealth;
         }
         /// <summary>
         /// HP actuel du personnage
         /// </summary>
         public int CurrentHealth { get; private set; }
-        public TYPE BaseType { get => _baseType;}
+        public TYPE BaseType { get => _baseType; }
+
+        public StatusPotential BaseStatus { get => _baseStatus; }
         /// <summary>
         /// HPMax, prendre en compte base et equipement potentiel
         /// </summary>
@@ -48,7 +56,8 @@ namespace _2023_GC_A2_Partiel_POO.Level_2
         {
             get
             {
-                throw new NotImplementedException();
+                if (CurrentEquipment != null) return _baseHealth + CurrentEquipment.BonusHealth;
+                return _baseHealth;
             }
         }
         /// <summary>
@@ -58,7 +67,8 @@ namespace _2023_GC_A2_Partiel_POO.Level_2
         {
             get
             {
-                throw new NotImplementedException();
+                if (CurrentEquipment != null) return _baseAttack + CurrentEquipment.BonusAttack;
+                return _baseAttack;
             }
         }
         /// <summary>
@@ -68,7 +78,8 @@ namespace _2023_GC_A2_Partiel_POO.Level_2
         {
             get
             {
-                throw new NotImplementedException();
+                if (CurrentEquipment != null) return _baseDefense + CurrentEquipment.BonusDefense;
+                return _baseDefense;
             }
         }
         /// <summary>
@@ -78,7 +89,9 @@ namespace _2023_GC_A2_Partiel_POO.Level_2
         {
             get
             {
-                throw new NotImplementedException();
+
+                if (CurrentEquipment != null) return _baseSpeed + CurrentEquipment.BonusSpeed;
+                return _baseSpeed;
             }
         }
         /// <summary>
@@ -90,7 +103,7 @@ namespace _2023_GC_A2_Partiel_POO.Level_2
         /// </summary>
         public StatusEffect CurrentStatus { get; private set; }
 
-        public bool IsAlive => throw new NotImplementedException();
+        public bool IsAlive => CurrentHealth > 0;
 
 
         /// <summary>
@@ -100,9 +113,13 @@ namespace _2023_GC_A2_Partiel_POO.Level_2
         /// </summary>
         /// <param name="s">skill attaquant</param>
         /// <exception cref="NotImplementedException"></exception>
-        public void ReceiveAttack(Skill s)
+        public void ReceiveAttack(Skill s, Character c)
         {
-            throw new NotImplementedException();
+            if (c.CurrentStatus != null) c.CurrentHealth -= (int)(c.Attack * c.CurrentStatus.DamageOnAttack);
+            CurrentHealth -= (s.Power - Defense);
+            if(s.Status != StatusPotential.NONE) CurrentStatus = StatusEffect.GetNewStatusEffect(s.Status);
+
+            if (!IsAlive) CurrentHealth = 0;
         }
         /// <summary>
         /// Equipe un objet au personnage
@@ -111,15 +128,30 @@ namespace _2023_GC_A2_Partiel_POO.Level_2
         /// <exception cref="ArgumentNullException">Si equipement est null</exception>
         public void Equip(Equipment newEquipment)
         {
-            throw new NotImplementedException();
+            if (newEquipment == null) throw new ArgumentNullException();
+            CurrentEquipment = newEquipment;
         }
         /// <summary>
         /// Desequipe l'objet en cours au personnage
         /// </summary>
         public void Unequip()
         {
-            throw new NotImplementedException();
+            CurrentEquipment = null;
         }
 
+
+        public void StatusRoutine()
+        {
+            if (CurrentStatus == null) return;
+            if (CurrentStatus.RemainingTurn > 0)
+            {
+                CurrentStatus.EndTurn();
+                CurrentHealth -= CurrentStatus.DamageEachTurn;
+            }
+            if (CurrentStatus.RemainingTurn == 0)
+            {
+                CurrentStatus = null;
+            }
+        }
     }
 }
